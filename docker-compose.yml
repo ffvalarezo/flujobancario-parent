@@ -1,0 +1,101 @@
+services:
+  postgres_db:
+    container_name: postgres
+    image: postgres:latest
+    ports:
+      - 5432:5432
+    volumes:
+      - ./dbfiles:/docker-entrypoint-initdb.d
+      - ./postgres_data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: qwerty
+      POSTGRES_DB: postgres
+    networks:
+      - my-network
+
+  pgadmin4:
+    image: dpage/pgadmin4
+    restart: always
+    environment:
+      PGADMIN_DEFAULT_EMAIL: "admin@admin.com"
+      PGADMIN_DEFAULT_PASSWORD: "qwerty"
+    ports:
+      - 80:80
+    depends_on:
+      - postgres_db
+    networks:
+      - my-network
+
+  rabbitmq:
+    container_name: rabbitmq
+    image: rabbitmq:4.0-management
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    networks:
+      - my-network
+
+  registry-discovery:
+    container_name: eurekaserver_container
+    image: eurekaserver_image:latest
+    ports:
+      - 8761:8761
+    environment:
+      - EUREKA_INSTANCE_PREFER_IP_ADDRESS=false
+      - EUREKA_INSTANCE_HOSTNAME=registry-discovery
+      - EUREKA_CLIENT_REGISTER_WITH_EUREKA=false
+      - EUREKA_CLIENT_FETCH_REGISTRY=false
+    networks:
+      - my-network
+
+  config-server:
+    container_name: config-server_container
+    image: config-server_image:latest
+    ports:
+      - 8880:8880
+    environment:
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://registry-discovery:8761/eureka/
+    depends_on:
+      - registry-discovery
+    networks:
+      - my-network
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:8880/actuator/health || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  cliente:
+    container_name: cliente_container
+    image: cliente_image:latest   
+    ports:
+      - 8081:8081
+    environment:
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://registry-discovery:8761/eureka/
+    depends_on:
+      config-server:
+        condition: service_healthy
+    networks:
+      - my-network
+    restart: always
+
+  transaccion:
+    container_name: transaccion_container
+    image: transaccion_image:latest   
+    ports:
+      - 8082:8082
+    environment:
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://registry-discovery:8761/eureka/
+    depends_on:
+      config-server:
+        condition: service_healthy
+      registry-discovery:
+        condition: service_started
+    networks:
+      - my-network
+    restart: always
+
+networks:
+  my-network:
+    driver: bridge

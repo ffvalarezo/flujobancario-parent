@@ -1,0 +1,103 @@
+{
+	"info": {
+		"_postman_id": "1e2bc8a9-8fcf-420f-9034-3a71302da2fc",
+		"name": "Cliente API Test",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
+		"_exporter_id": "24608568"
+	},
+	"item": [
+		{
+			"name": "Listar Clientes",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": "http://localhost:8081/clientes"
+			},
+			"response": []
+		},
+		{
+			"name": "Obtener Cliente",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"id\": 1\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "http://localhost:8081/clientes"
+			},
+			"response": []
+		},
+		{
+			"name": "Crear Cliente",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"nombre\": \"Juan Perez\",\n    \"genero\": \"Masculino\",\n    \"edad\": 30,\n    \"identificacion\": \"1234567890\",\n    \"direccion\": \"Av. Siempre Viva 123\",\n    \"telefono\": \"0999999999\",\n    \"contrasena\": \"password123\",\n    \"estado\": true\n}"
+				},
+				"url": "http://localhost:8081/clientes"
+			},
+			"response": []
+		},
+		{
+			"name": "Crear Cliente - Cuenta",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"nombre\": \"Teresa Calcuta\",\n    \"genero\": \"Femenino\",\n    \"edad\": 25,\n    \"identificacion\": \"11222334455\",\n    \"direccion\": \"Av. Rosales Este 4321\",\n    \"telefono\": \"0999999999\",\n    \"contrasena\": \"password321\",\n    \"estado\": true,\n    \"numeroCuenta\": \"CA001\",\n    \"tipoCuenta\": \"AHORRO\",\n    \"saldoInicial\": 50000.00\n}"
+				},
+				"url": "http://localhost:8081/clientes"
+			},
+			"response": []
+		},
+		{
+			"name": "Actualizar Cliente",
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"id\": 1,\n    \"nombre\": \"Juan Perez Actualizado\",\n    \"genero\": \"Masculino\",\n    \"edad\": 35,\n    \"identificacion\": \"1234567890\",\n    \"direccion\": \"Av. Nueva\",\n    \"telefono\": \"0998888888\",\n    \"contrasena\": \"newpassword123\",\n    \"estado\": true\n}"
+				},
+				"url": "http://localhost:8081/clientes/1"
+			},
+			"response": []
+		},
+		{
+			"name": "Eliminar Cliente",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": "http://localhost:8081/clientes/1"
+			},
+			"response": []
+		}
+	]
+}
